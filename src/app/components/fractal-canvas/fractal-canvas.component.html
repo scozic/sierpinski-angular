@@ -1,0 +1,9 @@
+<div class="canvas-container">
+  <canvas #canvas></canvas>
+  <div class="progress-container" *ngIf="progress < 100">
+    <div class="progress-bar" [style.width.%]="progress"></div>
+    <div class="progress-text">
+      {{ progress | number:'1.1-1' }}% - Remaining: {{ timeRemaining | number:'1.0-0' }}s
+    </div>
+  </div>
+</div>

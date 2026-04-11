@@ -1,0 +1,23 @@
+<div class="app-container">
+  <ng-container *ngIf="!showHelp">
+    <div class="sidebar">
+      <app-fractal-editor 
+        [fractal]="currentFractal" 
+        (fractalChange)="onFractalChange($event)"
+        (iterationsChange)="onIterationsChange($event)"
+        (saveImageRequest)="onSaveImage()"
+        (copyImageRequest)="onCopyImage()"
+        (showHelpRequest)="onShowHelp()">
+      </app-fractal-editor>
+    </div>
+    <div class="main-content">
+      <app-fractal-canvas 
+        #fractalCanvas
+        [fractal]="currentFractal" 
+        [iterations]="iterations">
+      </app-fractal-canvas>
+    </div>
+  </ng-container>
+
+  <app-help *ngIf="showHelp" (close)="onCloseHelp()"></app-help>
+</div>
