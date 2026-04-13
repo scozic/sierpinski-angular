@@ -1,54 +1,54 @@
 # Sierpinski Angular
 
-Application Angular pour la génération et la visualisation de fractales basées sur des transformations affines (IFS).
+Angular application for generating and visualizing fractals based on Iterated Function Systems (IFS).
 
-## Fonctionnalités réalisées :
+## Implemented Features:
 
-### 1. Modèles de données (DTOs)
-- `AffineTransform` : Représente une matrice de transformation 2D.
-- `Fractal` : Contient un nom et une liste de transformations affines.
-- `FractalImage` : Structure de données pour l'image (non utilisée directement pour le rendu canvas qui utilise les polygones transformés).
+### 1. Data Models (DTOs)
+- `AffineTransform`: Represents a 2D transformation matrix.
+- `Fractal`: Contains a name and a list of affine transformations.
+- `FractalImage`: Data structure for the image (not directly used for canvas rendering, which uses transformed polygons).
 
-### 2. Service Métier (`FractalService`)
-- Calcul de la composition de matrices affines.
-- Algorithme de calcul des $X^N$ transformations résultant de $N$ itérations.
-- Projection de points via les transformations.
+### 2. Business Service (`FractalService`)
+- Calculation of affine matrix composition.
+- Algorithm to calculate the $X^N$ transformations resulting from $N$ iterations.
+- Point projection via transformations.
 
-### 3. Interface Utilisateur (IHM)
-- **Éditeur de Fractale** :
-  - Modification du nom et du nombre d'itérations.
-  - Ajout/Suppression de transformations.
-  - Édition directe des coefficients de la matrice.
-  - **Visualiseur Interactif** : Chaque transformation dispose d'un mini-canevas permettant de modifier :
-    - La translation (glisser-déposer).
-    - L'échelle (molette de la souris).
-    - La rotation (CTRL + glisser-déposer).
-  - **Gestion de l'affichage** : Possibilité de réduire/développer chaque carte de transformation pour gagner de la place.
-- **Canevas de Visualisation** : Rendu en temps réel de la fractale complète.
-- **Aide interactive** : 
-  - Accessible via un bouton '?' animé dans la barre d'outils.
-  - Page dédiée avec 3 onglets : Guide de démarrage, À propos des fractales, Crédits.
-  - Guide avec raccourcis du visualiseur.
-  - Informations mathématiques sur les IFS et le point fixe.
-  - Licence Apache 2.0 consultable directement.
+### 3. User Interface (UI)
+- **Fractal Editor**:
+  - Modification of the name and number of iterations.
+  - Adding/Deleting transformations.
+  - Direct editing of matrix coefficients.
+  - **Interactive Visualizer**: Each transformation has a mini-canvas allowing modification of:
+    - Translation (drag and drop).
+    - Scale (mouse wheel).
+    - Rotation (CTRL + drag and drop).
+  - **Display Management**: Ability to collapse/expand each transformation card to save space.
+- **Visualization Canvas**: Real-time rendering of the complete fractal.
+- **Interactive Help**: 
+  - Accessible via an animated '?' button in the toolbar.
+  - Dedicated page with 3 tabs: Getting Started, About Fractals, Credits.
+  - Guide with visualizer shortcuts.
+  - Mathematical information on IFS and fixed points.
+  - Directly viewable Apache 2.0 license.
 
-### 4. Import / Export / Sauvegarde
-- Export de la structure de la fractale en format JSON (Fichier ou Presse-papier).
-- Import de fichiers JSON ou depuis le presse-papier.
-- Sauvegarde de l'image générée au format PNG (Téléchargement ou Presse-papier).
+### 4. Import / Export / Saving
+- Export fractal structure in JSON format (File or Clipboard).
+- Import from JSON files or from the clipboard.
+- Save the generated image in PNG format (Download or Clipboard).
 
-### 5. Ergonomie et Design
-- Mise en page responsive optimisée :
-  - **Portrait (Mobile)** : Canevas carré en bas (largeur écran), éditeur en haut remplissant l'espace restant.
-  - **Paysage (Bureau)** : Barre latérale à gauche, canevas collé à la barre latérale.
-- Barre d'outils avec icônes SVG et menus déroulants pour les actions d'import/export.
-- Utilisation de CSS Vanille pour une flexibilité maximale.
+### 5. User Experience & Design
+- Optimized responsive layout:
+  - **Portrait (Mobile)**: Square canvas at the bottom (screen width), editor at the top filling the remaining space.
+  - **Landscape (Desktop)**: Sidebar on the left, canvas attached to the sidebar.
+- Toolbar with SVG icons and dropdown menus for import/export actions.
+- Use of Vanilla CSS for maximum flexibility.
 
-## Utilisation
-1. Modifiez les transformations dans le panneau latéral.
-2. Observez le résultat sur le canevas central.
-3. Utilisez la molette ou CTRL+glisser sur les petits carrés bleus pour ajuster visuellement les transformations.
-4. Utilisez les boutons de la barre d'outils pour importer/exporter vos créations ou copier l'image finale.
+## Usage
+1. Modify the transformations in the side panel.
+2. Observe the result on the central canvas.
+3. Use the scroll wheel or CTRL+drag on the small blue squares to visually adjust the transformations.
+4. Use the toolbar buttons to import/export your creations or copy the final image.
 
 ---
 
@@ -58,6 +58,7 @@ Application Angular pour la génération et la visualisation de fractales basée
 - **Immutability for Change Detection**: The `FractalEditorComponent` clones `AffineTransform` objects (using `{...transform}`) whenever a matrix field or visualizer interaction occurs. This is critical to trigger `ngOnChanges` in the `TransformVisualizerComponent`.
 - **Component Persistence**: The `*ngFor` loop in the editor uses `trackBy: trackByTransform` (tracking by index). This prevents Angular from destroying and recreating components during dragging/cloning, ensuring smooth UI interactions.
 - **Coordinate System**: All internal math uses a range of `[-1, 1]`. The origin `(0,0)` is the center. Transformation parameters $m02$ and $m12$ represent translation in this space.
+
 ### Transform Visualizer Logic
 - **Interactivity**: Controlled by the `[interactive]` input. Header icons set this to `false`.
 - **Unified Interaction (Pointer Events)**: Uses Pointer Events (`pointerdown`, etc.) to support mouse, touch, and stylus input across all devices. `touch-action: none` is used to prevent browser scrolling during manipulation.
@@ -66,12 +67,11 @@ Application Angular pour la génération et la visualisation de fractales basée
   - **Uniform Scale (Red Square, Top-Right)**: Dragging this corner scales the shape while preserving aspect ratio.
   - **Non-Uniform Scale (Blue Circles, Midpoints)**: Dragging side handles scales the transformation specifically along the local X or Y axis.
   - **Translation (Blue Circle, Center)**: Dragging the origin handle moves the transformation in world space.
-- **Coordinate System**: All internal math uses a range of `[-1, 1]`.
 
 ### Naming Conventions
 - **Standardized Naming**: Fractals and their transformations follow a consistent pattern:
   - **Fractals**: Named manually or auto-generated as `fractalYYYYMMDD_HHMMSS` during shuffle.
-  - **Transformations**: Automatiquement nommées avec des identifiants courts (`T1`, `T2`, `T3`) pour maintenir une interface épurée.
+  - **Transformations**: Automatically named with short identifiers (`T1`, `T2`, `T3`) to maintain a clean interface.
 
 ### Rendering Performance & Stability
 - **Backpressure & Acknowledgment (ACK) System**: To prevent the browser tab from crashing during high-iteration fractal generation, a custom windowing mechanism was implemented. The Web Worker pauses generation if more than 10 batches are in flight and only resumes when the main thread sends an "ACK" after drawing a batch. This ensures the rendering never lags too far behind the calculation.
@@ -87,10 +87,6 @@ Application Angular pour la génération et la visualisation de fractales basée
 
 ### Clipboard & File Operations
 - **Clipboard API**: Used for both text (JSON) and binary data (PNG blob). 
-- **PNG Copy**: `canvas.toBlob` combined with `navigator.clipboard.write([new ClipboardItem(...)])` allows direct pasting into image editors or chat apps.
-- **JSON Clipboard**: Asynchronous `navigator.clipboard.readText()` is used for seamless fractal sharing.
-- **Menus**: A simple `activeMenu` state in the editor manages the visibility of custom dropdown menus for a cleaner UI.
-**: Used for both text (JSON) and binary data (PNG blob). 
 - **PNG Copy**: `canvas.toBlob` combined with `navigator.clipboard.write([new ClipboardItem(...)])` allows direct pasting into image editors or chat apps.
 - **JSON Clipboard**: Asynchronous `navigator.clipboard.readText()` is used for seamless fractal sharing.
 - **Menus**: A simple `activeMenu` state in the editor manages the visibility of custom dropdown menus for a cleaner UI.
