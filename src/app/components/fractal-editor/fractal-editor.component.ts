@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 import { Fractal } from '../../models/fractal';
 import { AffineTransform, createIdentity } from '../../models/affine-transform';
+import { PngMetadataService } from '../../services/png-metadata.service';
 
 @Component({
   selector: 'app-fractal-editor',
@@ -19,6 +20,8 @@ export class FractalEditorComponent implements OnInit {
 
   collapsedStates: boolean[] = [];
   activeMenu: string | null = null;
+
+  constructor(private pngMetadataService: PngMetadataService) {}
 
   onShowHelp() {
     this.showHelpRequest.emit();
@@ -55,6 +58,32 @@ export class FractalEditorComponent implements OnInit {
       console.error('Failed to read from clipboard:', err);
       alert('Failed to read from clipboard');
     }
+  }
+
+  resetToSierpinski() {
+    this.fractal = {
+      name: 'Sierpinski Triangle',
+      transforms: [
+        {
+          transformname: 'T1',
+          m00: 0.5, m01: 0.0, m02: 0.5,
+          m10: 0.0, m11: 0.5, m12: -0.5
+        },
+        {
+          transformname: 'T2',
+          m00: 0.5, m01: 0.0, m02: -0.5,
+          m10: 0.0, m11: 0.5, m12: -0.5
+        },
+        {
+          transformname: 'T3',
+          m00: 0.5, m01: 0.0, m02: 0.0,
+          m10: 0.0, m11: 0.5, m12: 0.5
+        }
+      ]
+    };
+    this.onChange();
+    this.onIterationsChange();
+    this.activeMenu = null;
   }
 
   saveToFile() {
@@ -175,9 +204,29 @@ export class FractalEditorComponent implements OnInit {
     URL.revokeObjectURL(url);
   }
 
-  importFractal(event: any) {
+  async importFractal(event: any) {
     const file = event.target.files[0];
-    if (file) {
+    if (!file) return;
+
+    if (file.type === 'image/png') {
+      try {
+        const metadata = await this.pngMetadataService.readMetadata(file, 'fractal');
+        if (metadata) {
+          const imported = JSON.parse(metadata);
+          if (imported.name && Array.isArray(imported.transforms)) {
+            this.fractal = imported;
+            this.onChange();
+          } else {
+            alert('Found fractal metadata but it has an invalid format.');
+          }
+        } else {
+          alert('No fractal metadata found in this PNG file.');
+        }
+      } catch (err) {
+        console.error('Error importing fractal from PNG:', err);
+        alert('Failed to read or parse fractal metadata from PNG.');
+      }
+    } else {
       const reader = new FileReader();
       reader.onload = (e: any) => {
         try {
@@ -185,13 +234,18 @@ export class FractalEditorComponent implements OnInit {
           if (imported.name && Array.isArray(imported.transforms)) {
             this.fractal = imported;
             this.onChange();
+          } else {
+            alert('Invalid fractal format in JSON file.');
           }
         } catch (err) {
-          console.error('Error importing fractal:', err);
+          console.error('Error importing fractal JSON:', err);
+          alert('Failed to parse fractal JSON file.');
         }
       };
       reader.readAsText(file);
     }
+    // Reset input so the same file can be selected again
+    event.target.value = '';
   }
 
   saveImage() {

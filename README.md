@@ -1,53 +1,57 @@
 # Sierpinski Angular
 
-Angular application for generating and visualizing fractals based on Iterated Function Systems (IFS).
+An Angular application for generating and visualizing fractals based on Iterated Function Systems (IFS).
 
-## Implemented Features:
+## Features
 
 ### 1. Data Models (DTOs)
 - `AffineTransform`: Represents a 2D transformation matrix.
 - `Fractal`: Contains a name and a list of affine transformations.
-- `FractalImage`: Data structure for the image (not directly used for canvas rendering, which uses transformed polygons).
+- `FractalImage`: Data structure for the image metadata.
 
-### 2. Business Service (`FractalService`)
-- Calculation of affine matrix composition.
-- Algorithm to calculate the $X^N$ transformations resulting from $N$ iterations.
+### 2. Business Logic (`FractalService`)
+- Calculation of affine matrix compositions.
+- Algorithm to compute $X^N$ transformations resulting from $N$ iterations.
 - Point projection via transformations.
 
 ### 3. User Interface (UI)
 - **Fractal Editor**:
-  - Modification of the name and number of iterations.
-  - Adding/Deleting transformations.
-  - Direct editing of matrix coefficients.
-  - **Interactive Visualizer**: Each transformation has a mini-canvas allowing modification of:
+  - Modify name and iteration depth.
+  - Add/Remove transformations.
+  - Direct edition of matrix coefficients.
+  - **Interactive Visualizer**: Each transformation has a mini-canvas allowing:
     - Translation (drag and drop).
-    - Scale (mouse wheel).
-    - Rotation (CTRL + drag and drop).
-  - **Display Management**: Ability to collapse/expand each transformation card to save space.
-- **Visualization Canvas**: Real-time rendering of the complete fractal.
+    - Scaling (mouse wheel).
+    - Rotation (CTRL + drag).
+  - **Layout Management**: Cards can be collapsed/expanded to save space.
+- **Main Visualization Canvas**: Real-time rendering of the complete fractal.
 - **Interactive Help**: 
   - Accessible via an animated '?' button in the toolbar.
-  - Dedicated page with 3 tabs: Getting Started, About Fractals, Credits.
-  - Guide with visualizer shortcuts.
-  - Mathematical information on IFS and fixed points.
-  - Directly viewable Apache 2.0 license.
+  - Single-page documentation regrouping all information.
+  - **Quick Start Guide**: Usage instructions and visualizer shortcuts.
+  - **Algorithm Explanation**: Details on transform composition (with explanatory diagram).
+  - **Technical Details**: Information on implementation (Web Workers, asynchronous batching, TypeScript).
+  - **Mathematics of Affine Transforms**: Matrix representation and parameter breakdown.
+  - **About Fractals**: History (Sierpiński) and mathematical foundation (IFS, fixed-point theorem).
+  - **Credits & License**: GitHub link and Apache 2.0 license.
 
-### 4. Import / Export / Saving
-- Export fractal structure in JSON format (File or Clipboard).
-- Import from JSON files or from the clipboard.
-- Save the generated image in PNG format (Download or Clipboard).
+### 4. Import / Export / Save
+- **Seamless PNG Portability**: Saved PNG images automatically contain the fractal's JSON configuration embedded as metadata. You can share your fractal by simply sending the image; another user can then import that PNG file to restore the exact same transformation set.
+- Export fractal structure as JSON (File or Clipboard).
+- Import from JSON files, clipboard, or **compatible PNG images**.
+- Save generated image as PNG (Download or Clipboard).
 
-### 5. User Experience & Design
+### 5. Design & Ergonomics
 - Optimized responsive layout:
-  - **Portrait (Mobile)**: Square canvas at the bottom (screen width), editor at the top filling the remaining space.
-  - **Landscape (Desktop)**: Sidebar on the left, canvas attached to the sidebar.
+  - **Portrait (Mobile)**: Square canvas at the bottom, editor at the top.
+  - **Landscape (Desktop)**: Sidebar on the left, canvas filling the remaining space.
 - Toolbar with SVG icons and dropdown menus for import/export actions.
-- Use of Vanilla CSS for maximum flexibility.
+- Pure Vanilla CSS for maximum flexibility and performance.
 
 ## Usage
-1. Modify the transformations in the side panel.
-2. Observe the result on the central canvas.
-3. Use the scroll wheel or CTRL+drag on the small blue squares to visually adjust the transformations.
+1. Modify transformations in the sidebar.
+2. Observe the results on the central canvas.
+3. Use the mouse wheel or CTRL+drag on the blue squares to visually adjust transformations.
 4. Use the toolbar buttons to import/export your creations or copy the final image.
 
 ---
@@ -74,15 +78,14 @@ Angular application for generating and visualizing fractals based on Iterated Fu
   - **Transformations**: Automatically named with short identifiers (`T1`, `T2`, `T3`) to maintain a clean interface.
 
 ### Rendering Performance & Stability
-- **Backpressure & Acknowledgment (ACK) System**: To prevent the browser tab from crashing during high-iteration fractal generation, a custom windowing mechanism was implemented. The Web Worker pauses generation if more than 10 batches are in flight and only resumes when the main thread sends an "ACK" after drawing a batch. This ensures the rendering never lags too far behind the calculation.
+- **Backpressure & Acknowledgment (ACK) System**: To prevent the browser tab from crashing during high-iteration fractal generation, a custom windowing mechanism was implemented. The Web Worker pauses generation if more than 10 batches are in flight and only resumes when the main thread sends an "ACK" after drawing a batch.
 - **Optimized Data Transfer (Transferable Objects)**: Transformation matrices are sent from the worker as `Float32Array`. Using transferable objects avoids expensive cloning and minimizes memory overhead.
 - **Chunked Drawing**: The main thread processes incoming transforms in limited chunks (e.g., 20,000 transforms per frame) using `requestAnimationFrame`. This maintains a smooth 60fps UI even when millions of polygons are being queued.
 - **Worker Hot-Loop Optimization**: Removed object creation, string concatenations, and recursive calls in the worker. All matrix math is performed on primitive numbers using a flat stack array.
-- **Asynchronous Calculation (Web Workers)**: To handle complex fractals without freezing the UI, calculations are offloaded to a dedicated Web Worker.
-- **Progress & ETA**: A real-time progress bar displays the completion percentage and an estimated time remaining, accurately synchronized with both computing and rendering progress thanks to the ACK system.
+- **Progress & ETA**: A real-time progress bar displays the completion percentage and an estimated time remaining, accurately synchronized with both computing and rendering progress.
 
 ### Layout & Responsiveness
-- **Portrait Mode**: The `.app-container` uses `flex-direction: column-reverse`. The `.main-content` (canvas) is fixed to `100vw` height and width to ensure a perfect square at the bottom. The `.sidebar` (editor) uses `flex-grow: 1` to fill the remaining top space.
+- **Portrait Mode**: The `.app-container` uses `flex-direction: column-reverse`. The `.main-content` (canvas) is fixed to `100vw` height and width to ensure a perfect square at the bottom.
 - **Canvas Alignment**: In desktop mode, `justify-content: flex-start` on the `.canvas-container` ensures the canvas sticks to the sidebar, avoiding dead space.
 
 ### Clipboard & File Operations

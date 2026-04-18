@@ -1,56 +1,245 @@
 <div class="help-overlay">
   <div class="help-header">
-    <div class="tabs">
-      <button [class.active]="activeTab === 'guide'" (click)="setTab('guide')">Quick Start Guide</button>
-      <button [class.active]="activeTab === 'about'" (click)="setTab('about')">About Fractals</button>
-      <button [class.active]="activeTab === 'credits'" (click)="setTab('credits')">Credits</button>
-    </div>
-    <button class="btn-close" (click)="onClose()" title="Close help">X</button>
+    <h2>Help & Documentation</h2>
+    <button class="btn-close" (click)="onClose()" title="Close help">✕</button>
   </div>
 
   <div class="help-body">
-    <div *ngIf="activeTab === 'guide'" class="tab-content">
+
+    <nav class="table-of-contents">
+      <h3>Table of Contents</h3>
+      <ul>
+        <li><a (click)="scrollTo('quick-start')">Quick Start Guide</a></li>
+        <li><a (click)="scrollTo('affine-transforms')">What are affine transformations?</a></li>
+        <li><a (click)="scrollTo('intuitive-picture')">How the fractal is built</a></li>
+        <li><a (click)="scrollTo('about-fractals')">About fractals</a></li>
+        <li><a (click)="scrollTo('technical-implementation')">Technical implementation</a></li>
+        <li><a (click)="scrollTo('credits-license')">Credits & License</a></li>
+      </ul>
+    </nav>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <section class="help-section" id="quick-start">
       <h2>Quick Start Guide</h2>
-      <p>This application is for drawing fractals using Iterated Function Systems (IFS).</p>
-      <p>The Sierpinski Triangle is a classic example: a triangle divided into three smaller triangles, which are in turn divided, and so on.</p>
-      
-      <h3>How to use:</h3>
+      <p>
+        This app lets you create and explore <b>fractal images</b> — infinitely detailed patterns built 
+        from a handful of simple rules. You don't need any maths background to get started: just add 
+        transformations, drag the handles in the preview, and watch the fractal evolve in real time.
+      </p>
+
+      <h3>The two ways to tweak a transformation</h3>
+      <p>
+        Each transformation appears as a small interactive square in the sidebar. You can change it in two ways:
+      </p>
       <ul>
-        <li><b>Modify a Transform:</b> Use the visualizer to scale, rotate, or move each transformation. Drag corners to rotate/scale, or the center to move.</li>
-        <li><b>Add Transforms:</b> Use the "Add" button to include more transformations in your fractal.</li>
-        <li><b>Shuffle:</b> Generate fun and unexpected fractals using the shuffle button.</li>
-        <li><b>Save & Export:</b> Export your transformation as JSON or save the final result as a PNG image.</li>
+        <li>
+          <b>Drag directly on the preview square</b> — grab a corner or the centre to move, rotate, or 
+          resize that piece of the fractal. The result updates live on the canvas.
+        </li>
+        <li>
+          <b>Type numbers in the matrix fields (m00 – m12)</b> — for when you want exact, reproducible values.
+          See the "How the maths works" section below if you'd like to understand what those numbers mean.
+        </li>
       </ul>
 
-      <h3>Shortcuts in Visualizer:</h3>
+      <h3>Common actions</h3>
       <ul>
-        <li><b>Drag Center:</b> Move (Translate)</li>
-        <li><b>Drag Top-Left (Red Dot):</b> Rotate</li>
-        <li><b>Drag Top-Right (Red Square):</b> Uniform Scale</li>
-        <li><b>Drag Midpoints (Blue Circles):</b> Local Scale (X or Y)</li>
-        <li><b>Mouse Wheel:</b> Zoom / Scale</li>
-        <li><b>CTRL + Drag:</b> Rotate (alternative)</li>
+        <li><b>Add</b> — add another transformation to make the fractal more complex.</li>
+        <li><b>Shuffle</b> — randomise all transformations and discover unexpected shapes.</li>
+        <li><b>Reset</b> — you can always return to the initial state by selecting <b>Sierpinski Triangle</b> from the <b>Import</b> menu.</li>
+        <li><b>Save / Export</b> — download your configuration as a JSON file, or save the canvas as a PNG image. <b>Cool Tip:</b> Saved PNGs have your fractal data hidden inside them — you can load a fractal back just by importing its PNG!</li>
       </ul>
-    </div>
 
-    <div *ngIf="activeTab === 'about'" class="tab-content">
-      <h2>About Fractals</h2>
-      <p>Wacław Sierpiński (1882–1969) was a Polish mathematician who described the <a href="https://en.wikipedia.org/wiki/Sierpi%C5%84ski_triangle" target="_blank">Sierpiński triangle</a> in 1915.</p>
-      
-      <h3>IFS Fractals & Fixed Point Theorem</h3>
-      <p>Iterated Function Systems (IFS) are a method of constructing fractals; the resulting fractals are often self-similar.</p>
-      <p>Mathematically, an IFS is a collection of contractive mappings on a complete metric space. According to the <b>Banach Fixed-Point Theorem</b>, such a system has a unique fixed point (the attractor). In our case, this attractor is the fractal image.</p>
-      <p>By repeatedly applying a set of affine transformations (linear transformations followed by a translation) to an initial set of points, the points will eventually converge to the fractal shape, regardless of the starting set. This is why concatenating these simple operations produces such complex and beautiful images.</p>
-    </div>
+      <h3>Drag handles cheat-sheet</h3>
+      <ul>
+        <li><b>Centre of square:</b> move (translate) the piece</li>
+        <li><b>Top-left red dot:</b> rotate</li>
+        <li><b>Top-right red square:</b> scale uniformly (zoom in/out)</li>
+        <li><b>Blue midpoint circles:</b> stretch on X or Y axis independently</li>
+        <li><b>Mouse wheel:</b> zoom / scale</li>
+        <li><b>Ctrl + drag:</b> rotate (alternative shortcut)</li>
+      </ul>
+    </section>
 
-    <div *ngIf="activeTab === 'credits'" class="tab-content">
-      <h2>Credits</h2>
-      <p>This app is ad-free and open source.</p>
+        <!-- ═══════════════════════════════════════════════════ -->
+    <section class="help-section" id="affine-transforms">
+      <h2>What are affine transformations?</h2>
+      <p>
+        Each affine transformation is a recipe for taking a point on the canvas and moving it somewhere new. 
+        The recipe involves six numbers — <code>m00</code> through <code>m12</code> — which control:
+      </p>
+      <ul>
+        <li><b>m00 and m11</b> — how much to scale (stretch or shrink) the shape</li>
+        <li><b>m01 and m10</b> — how much to rotate or shear (skew) the shape</li>
+        <li><b>m02 and m12</b> — how far to shift the shape horizontally and vertically</li>
+      </ul>
+      <p>
+        Mathematically, the new position of a point is calculated as:
+      </p>
+      <div class="math-block">
+        <pre>x' = m00·x + m01·y + m02
+y' = m10·x + m11·y + m12</pre>
+      </div>
+      <p>
+        In matrix form (useful if you're familiar with linear algebra):
+      </p>
+      <div class="math-block">
+        <pre>[ x' ]   [ m00  m01  m02 ] [ x ]
+[ y' ] = [ m10  m11  m12 ] [ y ]
+[ 1  ]   [  0    0    1  ] [ 1 ]</pre>
+      </div>
+      <p>
+        Don't worry if the matrix notation looks unfamiliar — everything you can do with numbers 
+        you can also do visually using the drag handles.
+      </p>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <section class="help-section" id="intuitive-picture">
+      <h2>How the fractal is built — the intuitive picture</h2>
+      <p>
+        Imagine you have a drawing. You apply each of your transformations to that drawing — shrinking it, 
+        rotating it, shifting it — and you paste all the tiny copies back together. That becomes your new 
+        drawing. Repeat this process over and over, and the result gradually converges into a fractal.
+      </p>
+      <p>
+        The classic example is the <b>Sierpiński triangle</b>: start with a filled triangle, apply three 
+        "shrink-and-shift" rules, and after just a few iterations the familiar triangle-within-triangle 
+        pattern appears.
+      </p>
+
+      <div class="image-container">
+        <img src="assets/transformsExplained.png" alt="Three iterations building up a Sierpinski Triangle">
+        <p class="image-caption">
+          Each step applies the same three rules to the previous result. After only a handful of iterations, 
+          the fractal is already clearly recognisable.
+        </p>
+      </div>
+
+      <p>
+        The remarkable thing is that <b>no matter what shape you start with</b> — a square, a photograph, 
+        a random scribble — the system always converges to the same final fractal. The rules alone 
+        determine the outcome.
+      </p>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <section class="help-section" id="about-fractals">
+      <h2>About fractals</h2>
+
+      <h3>What is a fractal?</h3>
+      <p>
+        A fractal is a shape that looks similar to itself no matter how closely you zoom in. 
+        This property is called <b>self-similarity</b>. Fractals are not just mathematical 
+        curiosities — they appear everywhere in nature: coastlines, snowflakes, ferns, river networks, 
+        lightning bolts, and the branching of your lungs all display fractal-like structure.
+      </p>
+
+      <h3>Famous fractals to explore</h3>
+      <ul>
+        <li>
+          <b><a href="https://en.wikipedia.org/wiki/Sierpi%C5%84ski_triangle" target="_blank">Sierpiński Triangle</a></b> 
+          — described by Polish mathematician 
+          <a href="https://en.wikipedia.org/wiki/Wac%C5%82aw_Sierpi%C5%84ski" target="_blank">Wacław Sierpiński</a> 
+          (1882–1969) in 1915. The default preset in this app produces this shape.
+        </li>
+        <li>
+          <b><a href="https://en.wikipedia.org/wiki/Koch_snowflake" target="_blank">Koch Snowflake</a></b> 
+          — a curve with infinite perimeter enclosing a finite area. One of the earliest fractal examples.
+        </li>
+        <li>
+          <b><a href="https://en.wikipedia.org/wiki/Barnsley_fern" target="_blank">Barnsley Fern</a></b> 
+          — a fern leaf generated by exactly four affine transformations. A perfect demonstration of how 
+          complex natural-looking forms arise from simple IFS rules.
+        </li>
+        <li>
+          <b><a href="https://en.wikipedia.org/wiki/Mandelbrot_set" target="_blank">Mandelbrot Set</a></b> 
+          — arguably the most famous fractal, generated by a different method (complex number iteration) 
+          but sharing the same spirit of infinite complexity from simple rules.
+        </li>
+        <li>
+          <b><a href="https://en.wikipedia.org/wiki/Julia_set" target="_blank">Julia Sets</a></b> 
+          — close relatives of the Mandelbrot set, each with its own distinctive shape.
+        </li>
+      </ul>
+
+      <h3>Iterated Function Systems (IFS)</h3>
+      <p>
+        This app uses a technique called an <b>Iterated Function System</b>. An IFS is simply a 
+        collection of transformations (like the ones you edit in the sidebar). When applied repeatedly, 
+        they always converge to the same fractal shape — called the <b>attractor</b> of the system.
+      </p>
+      <p>
+        This convergence is guaranteed by the 
+        <a href="https://en.wikipedia.org/wiki/Banach_fixed-point_theorem" target="_blank">Banach Fixed-Point Theorem</a>: 
+        as long as each transformation shrinks distances (i.e. is <em>contractive</em>), the system 
+        is mathematically guaranteed to settle on a unique shape, regardless of the starting image.
+      </p>
+      <p>
+        IFS were popularised by mathematician 
+        <a href="https://en.wikipedia.org/wiki/Michael_Barnsley" target="_blank">Michael Barnsley</a> 
+        in the 1980s, and have been used in applications ranging from image compression to procedural 
+        texture generation in video games.
+      </p>
+
+      <h3>Want to learn more?</h3>
+      <ul>
+        <li><a href="https://en.wikipedia.org/wiki/Fractal" target="_blank">Fractals — Wikipedia overview</a></li>
+        <li><a href="https://en.wikipedia.org/wiki/Iterated_function_system" target="_blank">Iterated Function Systems — Wikipedia</a></li>
+      </ul>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <section class="help-section" id="technical-implementation">
+      <h2>Technical implementation</h2>
+      <p>
+        This is a pure client-side Angular application built to handle high-complexity fractals 
+        smoothly, even in the browser.
+      </p>
+
+      <h3>The compositional algorithm</h3>
+      <p>
+        The step-by-step approach (apply rules → get new image → repeat) is intuitive but slow at 
+        high resolutions, because each iteration redraws every pixel. Instead, this app uses a 
+        <b>compositional approach</b>: it pre-computes all possible <em>combinations</em> of 
+        transformations and draws the final shapes directly, skipping intermediate images entirely.
+        Remark: The combinations are computed 'depth first' to avoid storing too many intermediate 
+        affine transformations in memory during the computation.
+      </p>
+      <p>
+        For 3 transformations at iteration depth 5, this means drawing 3⁵ = 243 tiny shapes directly 
+        onto the canvas — far more efficient than iterating step by step.
+      </p>
+
+      <h3>Performance techniques</h3>
+      <ul>
+        <li><b>Web Workers</b> — heavy computation runs in a background thread, so the UI stays 
+        smooth at 60 fps while the fractal renders.</li>
+        <li><b>Asynchronous batching</b> — results are sent to the canvas progressively in batches, 
+        so you see the fractal build up gradually rather than waiting for everything at once.</li>
+        <li><b>Backpressure management</b> — if the rendering thread falls behind, the worker pauses 
+        automatically to avoid memory buildup.</li>
+        <li><b>Transferable objects</b> — large data arrays (<code>Float32Array</code>) are passed 
+        between threads without copying, keeping transfers fast.</li>
+      </ul>
+
+      <h3>Metadata Embedding</h3>
+      <p>
+        To make sharing easier, this app uses custom <b>PNG tEXt chunks</b>. When you save an image, the entire 
+        fractal configuration is embedded into the file as metadata. This means the PNG is not just a picture, 
+        but also a portable data container that can be re-imported later to restore the exact same transformation set.
+      </p>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <section class="help-section" id="credits-license">
+      <h2>Credits & License</h2>
       <p>Source code: <a href="https://github.com/scozic/sierpinski-angular" target="_blank">https://github.com/scozic/sierpinski-angular</a></p>
-      <p>Written by <a href="https://github.com/scozic" target="_blank">Sylvestre COZIC</a> (<a href="mailto:scozic.dev@gmail.com">scozic.dev@gmail.com</a>)</p>
-      
-      <h3>License</h3>
-      <p>Distributed under the Apache License 2.0.</p>
+      <p>Written by <a href="https://github.com/scozic" target="_blank">Sylvestre COZIC</a></p>
+
+      <h3>Apache License 2.0</h3>
       <div class="license-pane">
         <pre>
                                  Apache License
@@ -229,8 +418,35 @@
       of your accepting any such warranty or additional liability.
 
    END OF TERMS AND CONDITIONS
+
+   APPENDIX: How to apply the Apache License to your work.
+
+      To apply the Apache License to your work, attach the following
+      boilerplate notice, with the fields enclosed by brackets "[]"
+      replaced with your own identifying information. (Don't include
+      the brackets!)  The text should be enclosed in the appropriate
+      comment syntax for the file format. We also recommend that a
+      file or class name and description of purpose be included on the
+      same "printed page" as the copyright notice for easier
+      identification within third-party archives.
+
+   Copyright [yyyy] [name of copyright owner]
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
         </pre>
       </div>
-    </div>
+    </section>
+
   </div>
 </div>

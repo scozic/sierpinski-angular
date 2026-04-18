@@ -2,6 +2,7 @@ import { Component, Input, OnChanges, SimpleChanges, ViewChild, ElementRef, Afte
 import { Fractal } from '../../models/fractal';
 import { FractalService } from '../../services/fractal.service';
 import { AffineTransform } from '../../models/affine-transform';
+import { PngMetadataService } from '../../services/png-metadata.service';
 
 @Component({
   selector: 'app-fractal-canvas',
@@ -28,7 +29,10 @@ export class FractalCanvasComponent implements OnChanges, AfterViewInit, OnDestr
     { x: -1, y: -1 }
   ];
 
-  constructor(private fractalService: FractalService) {}
+  constructor(
+    private fractalService: FractalService,
+    private pngMetadataService: PngMetadataService
+  ) {}
 
   ngAfterViewInit() {
     const context = this.canvasRef.nativeElement.getContext('2d');
@@ -189,24 +193,34 @@ export class FractalCanvasComponent implements OnChanges, AfterViewInit, OnDestr
 
   downloadImage() {
     const canvas = this.canvasRef.nativeElement;
-    const url = canvas.toDataURL('image/png');
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${this.fractal.name.replace(/\s+/g, '_')}.png`;
-    a.click();
+    canvas.toBlob(async (blob) => {
+      if (blob) {
+        const fractalData = JSON.stringify(this.fractal);
+        const blobWithMetadata = await this.pngMetadataService.writeMetadata(blob, 'fractal', fractalData);
+        const url = URL.createObjectURL(blobWithMetadata);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${this.fractal.name.replace(/\s+/g, '_')}.png`;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+    }, 'image/png');
   }
 
   copyImageToClipboard() {
     const canvas = this.canvasRef.nativeElement;
-    canvas.toBlob((blob) => {
+    canvas.toBlob(async (blob) => {
       if (blob) {
-        const item = new ClipboardItem({ 'image/png': blob });
+        const fractalData = JSON.stringify(this.fractal);
+        const blobWithMetadata = await this.pngMetadataService.writeMetadata(blob, 'fractal', fractalData);
+        const item = new ClipboardItem({ 'image/png': blobWithMetadata });
         navigator.clipboard.write([item]).then(() => {
-          alert('Image copied to clipboard!');
+          alert('Image with fractal metadata copied to clipboard!');
         }).catch(err => {
           console.error('Could not copy image: ', err);
         });
       }
-    });
+    }, 'image/png');
   }
 }
+

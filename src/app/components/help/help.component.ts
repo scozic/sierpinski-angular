@@ -7,13 +7,15 @@ import { Component, EventEmitter, Output } from '@angular/core';
 })
 export class HelpComponent {
   @Output() close = new EventEmitter<void>();
-  activeTab: 'guide' | 'about' | 'credits' = 'guide';
 
   onClose() {
     this.close.emit();
   }
 
-  setTab(tab: 'guide' | 'about' | 'credits') {
-    this.activeTab = tab;
+  scrollTo(id: string) {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }
 }

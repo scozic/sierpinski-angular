@@ -1,3 +1,11 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
 .help-overlay {
   flex-grow: 1;
   width: 100%;
@@ -8,6 +16,7 @@
   flex-direction: column;
   color: #e2e8f0;
   animation: fadeIn 0.3s ease-out;
+  overflow: hidden; /* Prevent overlay itself from scrolling */
 }
 
 @keyframes fadeIn {
@@ -22,31 +31,13 @@
   padding: 1rem 2rem;
   background-color: #1e293b;
   border-bottom: 1px solid #334155;
+  flex-shrink: 0; /* Header should not shrink */
 }
 
-.tabs {
-  display: flex;
-  gap: 1rem;
-}
-
-.tabs button {
-  background: none;
-  border: none;
-  color: #94a3b8;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-  font-size: 1rem;
-  border-bottom: 2px solid transparent;
-  transition: all 0.2s;
-}
-
-.tabs button:hover {
-  color: #f1f5f9;
-}
-
-.tabs button.active {
+.help-header h2 {
+  margin: 0;
   color: #38bdf8;
-  border-bottom-color: #38bdf8;
+  font-size: 1.5rem;
 }
 
 .btn-close {
@@ -71,43 +62,144 @@
 .help-body {
   flex-grow: 1;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   padding: 2rem;
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
   width: 100%;
+  position: relative; /* Sometimes needed for scrolling context */
 }
 
-.tab-content h2 {
+.table-of-contents {
+  background: #1e293b;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  margin-bottom: 3rem;
+  border: 1px solid #334155;
+}
+
+.table-of-contents h3 {
+  margin-top: 0;
+  color: #38bdf8;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.table-of-contents ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 0.5rem 1.5rem;
+}
+
+.table-of-contents a {
+  color: #94a3b8;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s;
+  display: block;
+  padding: 0.25rem 0;
+}
+
+.table-of-contents a:hover {
+  color: #38bdf8;
+  text-decoration: underline;
+}
+
+.help-section {
+  margin-bottom: 3rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #1e293b;
+}
+
+.help-section:last-child {
+  border-bottom: none;
+}
+
+.help-section h2 {
   color: #38bdf8;
   margin-top: 0;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
 }
 
-.tab-content h3 {
+.help-section h3 {
   color: #7dd3fc;
-  margin-top: 2rem;
+  margin-top: 1.5rem;
+  font-size: 1.3rem;
 }
 
-.tab-content p {
+.help-section p {
   line-height: 1.6;
+  color: #cbd5e1;
+  margin-bottom: 1rem;
+}
+
+.help-section ul {
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.help-section li {
+  margin-bottom: 0.75rem;
+  line-height: 1.5;
   color: #cbd5e1;
 }
 
-.tab-content ul {
-  padding-left: 1.5rem;
+.help-section b {
+  color: #f1f5f9;
 }
 
-.tab-content li {
-  margin-bottom: 0.5rem;
-  line-height: 1.4;
-}
-
-.tab-content a {
+.help-section a {
   color: #38bdf8;
   text-decoration: none;
 }
 
-.tab-content a:hover {
+.help-section a:hover {
   text-decoration: underline;
+}
+
+.math-block {
+  background: #020617;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid #334155;
+  margin: 1.5rem 0;
+  display: flex;
+  justify-content: center;
+}
+
+.math-block pre {
+  margin: 0;
+  font-family: 'Fira Code', monospace;
+  font-size: 1.1rem;
+  color: #7dd3fc;
+  white-space: pre;
+}
+
+.image-container {
+  background: #1e293b;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  margin: 2rem 0;
+  text-align: center;
+  border: 1px solid #334155;
+}
+
+.image-container img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.25rem;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.image-caption {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #94a3b8 !important;
+  font-style: italic;
 }
 
 .license-pane {
@@ -116,13 +208,13 @@
   border-radius: 0.5rem;
   border: 1px solid #334155;
   margin-top: 1rem;
-  max-height: 400px;
+  max-height: 300px;
   overflow-y: auto;
 }
 
 .license-pane pre {
   margin: 0;
-  font-family: monospace;
+  font-family: 'Fira Code', monospace;
   font-size: 0.85rem;
   color: #94a3b8;
   white-space: pre-wrap;
@@ -130,26 +222,14 @@
 
 @media screen and (max-width: 600px) {
   .help-header {
-    flex-direction: column-reverse;
-    gap: 1rem;
     padding: 1rem;
-  }
-  
-  .btn-close {
-    align-self: flex-end;
-  }
-  
-  .tabs {
-    width: 100%;
-    justify-content: space-between;
-  }
-  
-  .tabs button {
-    padding: 0.5rem 0.25rem;
-    font-size: 0.9rem;
   }
   
   .help-body {
-    padding: 1rem;
+    padding: 1.5rem 1rem;
+  }
+
+  .help-section h2 {
+    font-size: 1.5rem;
   }
 }
