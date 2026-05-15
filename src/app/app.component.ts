@@ -13,6 +13,7 @@ export class AppComponent {
   @ViewChild('fractalCanvas') fractalCanvas!: FractalCanvasComponent;
 
   showHelp: boolean = false;
+  showTutorial: boolean = true;
 
   currentFractal: Fractal = {
     name: 'Sierpinski Triangle',
@@ -59,5 +60,9 @@ export class AppComponent {
 
   onCloseHelp() {
     this.showHelp = false;
+  }
+
+  onCloseTutorial() {
+    this.showTutorial = false;
   }
 }

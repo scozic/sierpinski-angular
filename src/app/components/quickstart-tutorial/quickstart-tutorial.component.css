@@ -1,0 +1,191 @@
+.tutorial-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.4); /* Reduced opacity for better visibility */
+  backdrop-filter: blur(2px); /* Reduced blur */
+  z-index: 1000;
+  color: white;
+  font-family: system-ui, -apple-system, sans-serif;
+  cursor: pointer;
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.tutorial-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.guide-item {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  max-width: 250px;
+}
+
+.guide-text {
+  background: rgba(15, 23, 42, 0.95); /* Darker background for text readability */
+  padding: 12px;
+  border-radius: 8px;
+  border: 2px solid #38bdf8; /* Brighter border */
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.guide-text strong {
+  display: block;
+  color: #38bdf8;
+  margin-bottom: 4px;
+  font-size: 1.1rem;
+}
+
+.guide-text p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: #f1f5f9;
+}
+
+.arrow {
+  filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.9));
+  animation: bounce 2s infinite;
+  flex-shrink: 0;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(0, -8px); }
+}
+
+.arrow-up {
+  animation: bounceUp 2s infinite;
+}
+
+@keyframes bounceUp {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(0, -8px); }
+}
+
+.arrow-left {
+  animation: bounceLeft 2s infinite;
+}
+
+@keyframes bounceLeft {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-8px, 0); }
+}
+
+/* Desktop Positioning - Based on 420px sidebar */
+.item-toolbar {
+  top: 90px; /* Moved 75px lower (15px -> 90px) */
+  left: 20px;
+  flex-direction: column;
+}
+
+.item-help {
+  top: 15px; /* Points at Help button in toolbar */
+  left: 355px; /* Moved 60px to the left (415px -> 355px) */
+  max-width: 350px;
+  flex-direction: row;
+}
+
+.item-add {
+  top: 245px; /* Moved 10px lower (235px -> 245px) */
+  left: 355px;
+  max-width: 350px;
+  flex-direction: row;
+}
+
+.item-settings {
+  top: 290px; /* Moved 15px lower (275px -> 290px) */
+  left: 30px;
+  flex-direction: column;
+}
+
+.item-visualizer {
+  top: 460px; /* Moved 50px lower (410px -> 460px) */
+  left: 160px; /* Moved 200px to the left (360px -> 160px) */
+  max-width: 330px;
+  flex-direction: row;
+}
+
+.item-canvas {
+  top: calc(50% - 10px); /* Arrow tip at y=10 inside the guide hits 50% screen height */
+  left: calc(210px + 50vw); /* Center of the area to the right of the 420px sidebar */
+  transform: translateX(-50%);
+  flex-direction: column;
+  max-width: 300px;
+  text-align: center;
+}
+
+.dismiss-hint {
+  position: absolute;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #38bdf8;
+  color: #0f172a;
+  padding: 14px 28px;
+  border-radius: 30px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  box-shadow: 0 0 30px rgba(56, 189, 248, 0.6);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: translateX(-50%) scale(1); }
+  50% { transform: translateX(-50%) scale(1.08); }
+  100% { transform: translateX(-50%) scale(1); }
+}
+
+/* Hide on vertical screen devices (portrait orientation) */
+@media (orientation: portrait) {
+  .tutorial-overlay {
+    display: none;
+  }
+}
+
+/* Mobile Positioning - Original (kept as fallback but portrait takes precedence) */
+@media screen and (max-width: 768px) {
+  .item-toolbar {
+    top: auto;
+    bottom: 120px;
+    left: 20px;
+    max-width: 160px;
+  }
+  
+  .item-help {
+    top: auto;
+    bottom: 120px;
+    left: auto;
+    right: 20px;
+    max-width: 140px;
+  }
+
+  .item-settings {
+    top: auto;
+    bottom: 20px;
+    left: 20px;
+    max-width: 140px;
+  }
+
+  .item-visualizer {
+    top: auto;
+    bottom: 60px;
+    left: auto;
+    right: 20px;
+    max-width: 160px;
+  }
+
+  .item-canvas {
+    top: 30%;
+    left: 50%;
+  }
+}

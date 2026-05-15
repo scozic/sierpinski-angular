@@ -38,7 +38,7 @@
         </li>
         <li>
           <b>Type numbers in the matrix fields (m00 – m12)</b> — for when you want exact, reproducible values.
-          See the "How the maths works" section below if you'd like to understand what those numbers mean.
+          See the <a (click)="scrollTo('affine-transforms')">"What are affine transformations?"</a> section below if you'd like to understand what those numbers mean.
         </li>
       </ul>
 
@@ -46,9 +46,12 @@
       <ul>
         <li><b>Add</b> — add another transformation to make the fractal more complex.</li>
         <li><b>Shuffle</b> — randomise all transformations and discover unexpected shapes.</li>
-        <li><b>Reset</b> — you can always return to the initial state by selecting <b>Sierpinski Triangle</b> from the <b>Import</b> menu.</li>
-        <li><b>Save / Export</b> — download your configuration as a JSON file, or save the canvas as a PNG image. <b>Cool Tip:</b> Saved PNGs have your fractal data hidden inside them — you can load a fractal back just by importing its PNG!</li>
+        <li><b>Import</b> — reset to the <b>Sierpinski Triangle</b>, or load a fractal <b>From File</b> (PNG/JSON) or <b>From Clipboard</b>.</li>
+        <li><b>Export</b> — use <b>To File (PNG)</b> to download, <b>Copy Image to clipboard</b> to share, or <b>Transform to Clipboard</b> for JSON text.</li>
       </ul>
+      <p>
+        <b>Cool Tip:</b> Saved PNGs have your fractal data hidden inside them! You can share your fractal by sending the image; anyone else can then import that PNG to restore your exact transformations.
+      </p>
 
       <h3>Drag handles cheat-sheet</h3>
       <ul>

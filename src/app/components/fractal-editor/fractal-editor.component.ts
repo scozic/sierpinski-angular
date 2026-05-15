@@ -86,16 +86,6 @@ export class FractalEditorComponent implements OnInit {
     this.activeMenu = null;
   }
 
-  saveToFile() {
-    this.exportFractal();
-    this.activeMenu = null;
-  }
-
-  importFromFile() {
-    // This will be handled by the file input click in the template
-    this.activeMenu = null;
-  }
-
   triggerSaveImage() {
     this.saveImageRequest.emit();
     this.activeMenu = null;
@@ -191,17 +181,6 @@ export class FractalEditorComponent implements OnInit {
 
   onIterationsChange() {
     this.iterationsChange.emit(this.iterations);
-  }
-
-  exportFractal() {
-    const data = JSON.stringify(this.fractal, null, 2);
-    const blob = new Blob([data], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${this.fractal.name.replace(/\s+/g, '_')}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
   }
 
   async importFractal(event: any) {

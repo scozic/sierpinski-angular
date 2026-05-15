@@ -24,6 +24,7 @@ An Angular application for generating and visualizing fractals based on Iterated
     - Scaling (mouse wheel).
     - Rotation (CTRL + drag).
   - **Layout Management**: Cards can be collapsed/expanded to save space.
+  - **Reorganized Toolbar**: Simplified menus for better ergonomics.
 - **Main Visualization Canvas**: Real-time rendering of the complete fractal.
 - **Interactive Help**: 
   - Accessible via an animated '?' button in the toolbar.
@@ -37,9 +38,14 @@ An Angular application for generating and visualizing fractals based on Iterated
 
 ### 4. Import / Export / Save
 - **Seamless PNG Portability**: Saved PNG images automatically contain the fractal's JSON configuration embedded as metadata. You can share your fractal by simply sending the image; another user can then import that PNG file to restore the exact same transformation set.
-- Export fractal structure as JSON (File or Clipboard).
-- Import from JSON files, clipboard, or **compatible PNG images**.
-- Save generated image as PNG (Download or Clipboard).
+- **Import Menu**:
+  - Sierpinski Triangle: Reset to the classic fractal.
+  - From File: Import from JSON files or compatible PNG images.
+  - From Clipboard: Import fractal structure from JSON text.
+- **Export Menu**:
+  - To File (PNG): Export current image as PNG with embedded metadata.
+  - Copy Image to clipboard: Copy PNG with metadata for easy sharing.
+  - Transform to Clipboard: Export current transform structure as JSON text.
 
 ### 5. Design & Ergonomics
 - Optimized responsive layout:

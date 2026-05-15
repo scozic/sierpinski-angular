@@ -8,6 +8,7 @@ import { FractalEditorComponent } from './components/fractal-editor/fractal-edit
 import { FractalCanvasComponent } from './components/fractal-canvas/fractal-canvas.component';
 import { TransformVisualizerComponent } from './components/transform-visualizer/transform-visualizer.component';
 import { HelpComponent } from './components/help/help.component';
+import { QuickstartTutorialComponent } from './components/quickstart-tutorial/quickstart-tutorial.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { HelpComponent } from './components/help/help.component';
     FractalEditorComponent,
     FractalCanvasComponent,
     TransformVisualizerComponent,
-    HelpComponent
+    HelpComponent,
+    QuickstartTutorialComponent
   ],
   imports: [
     BrowserModule,
